@@ -30,15 +30,20 @@ class StepGenerator(BasePrompt):
             str: The output or error message from the code execution.
         """
         try:
+            print(f"Executing code:\n{code}")
+            
             # Using `exec` to run the code within a limited local environment
             local_env = {}
             exec(code, {}, local_env)
             result = local_env.get("result", "Code executed successfully but did not return a 'result' variable.")
             
             # Return the result or success message
+            print(f"Code executed successfully, result: {result}")
+            
             return str(result)
         except Exception as e:
             # Capture and format the exception details
+            print(f"Error executing code: {traceback.format_exc()}")
             return f"Error executing code: {traceback.format_exc()}"
     
     async def generate_step(self, session_type: SessionType, history: list[BaseChatMessage], description: str, inputs: Optional[dict] = None) -> tuple[Step, list[BaseChatMessage]]:
@@ -62,6 +67,12 @@ Guidelines:
 - Your final step MUST be marked as 'is_final_step' and contain only text elements
 - DO NOT reference the next step in any of your steps
 - The final step DOES NOT HAVE A SUBMIT BUTTON
+- You can use the 'execute_code' tool to perform calculations or other computations
+
+Code Execution Guidelines:
+- You can execute basic Python code using the 'execute_code' tool.
+- Your code must use base Python, you cannot use any external libraries or packages.
+- Your code must return a result variable.
 
 Element Usage Guidelines:
 
