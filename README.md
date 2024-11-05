@@ -7,6 +7,6 @@ This codebase serves as an example implementation of creating and using conditio
 3. Begin a form
 4. Submit step
 5. LLM generates JSON describing elements to render with id, label, and other element-specific properties
-6. Repeat 3-5 until all information is gathered
+6. Repeat 4-5 until all information is gathered
 7. LLM generates conclusion screen
 8. All inputs entered into the form are saved 
