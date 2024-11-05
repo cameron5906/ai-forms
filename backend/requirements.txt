@@ -1,0 +1,10 @@
+pydantic
+openai
+fastapi[all]
+sqlmodel
+sqlalchemy
+psycopg2-binary
+uvicorn
+aiosqlite
+twilio
+python-dotenv

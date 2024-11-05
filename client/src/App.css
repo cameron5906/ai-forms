@@ -1,0 +1,252 @@
+#root {
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+/* Form Containers */
+.form-step {
+  background-color: #fff;
+  padding: 2rem;
+  padding-top: 1rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin: 0 auto;
+  color: #333;
+  max-width: 50%;
+  box-sizing: border-box;
+  min-width: 400px;
+}
+
+.step-title {
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.step-description {
+  font-size: 0.8rem;
+  margin-bottom: 1.5rem;
+}
+
+/* Form Elements */
+.form-element {
+  margin-bottom: 0.5rem;
+  width: 100%;
+}
+
+/* Labels */
+.form-element label {
+  display: block;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #4a5568;
+}
+
+/* Inputs */
+input[type="text"],
+input[type="number"],
+input[type="date"],
+input[type="password"],
+select,
+textarea {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  font-size: 1rem;
+  transition: border-color 0.2s ease;
+  background-color: #f8fafc;
+  box-sizing: border-box;
+  color: #4a5568;
+  font-size: 0.8rem;
+}
+
+input[type="text"]:focus,
+input[type="number"]:focus,
+input[type="date"]:focus,
+input[type="password"]:focus,
+select:focus,
+textarea:focus {
+  outline: none;
+  border-color: #4f46e5;
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+}
+
+/* Checkboxes */
+.checkbox-element {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+input[type="checkbox"] {
+  width: 1.25rem;
+  height: 1.25rem;
+  border-radius: 4px;
+  border: 2px solid #cbd5e1;
+  cursor: pointer;
+}
+
+/* Element Groups */
+.element-group {
+  border-radius: 6px;
+}
+
+.element-group-title {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.element-group.horizontal {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+}
+
+.element-group.vertical {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+/* Text Elements */
+.text-element {
+  /* margin-top: 0.5rem; */
+  color: #4a5568;
+  line-height: 1.5;
+}
+
+.text-element.sm {
+  font-size: 0.875rem;
+}
+.text-element.md {
+  /* font-size: 1rem; */
+}
+.text-element.lg {
+  /* font-size: 1.25rem; */
+  /* font-weight: 600; */
+}
+
+/* Dropdown specific styles */
+select {
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%234a5568' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10l-5 5z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.75rem center;
+  padding-right: 2.5rem;
+}
+
+/* Add these styles for dropdown options */
+select option {
+  background-color: #f8fafc;
+  color: #4a5568;
+  padding: 0.5rem;
+}
+
+.form-list-item {
+  cursor: pointer;
+  padding: 10px;
+  border: 1px solid #ccc;
+  margin: 5px 0;
+}
+
+.form-list-item:hover {
+  background-color: #f0f0f0;
+  color: #000;
+  border-color: #000;
+}
+
+.submit-button-container {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.submit-button {
+  margin-top: 1rem;
+  font-size: 0.8em;
+}
+
+.submit-button:disabled {
+  background-color: #ccc;
+  color: #666;
+  cursor: not-allowed;
+}
+
+/* Loading Spinner */
+.spinner {
+  width: 16px;
+  height: 16px;
+  border: 1px solid #f3f3f3;
+  border-top: 1px solid #4686e5; /* Matches your focus color */
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+.spinner-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* Sizes */
+.spinner.sm {
+  width: 20px;
+  height: 20px;
+  border-width: 2px;
+}
+
+.spinner.lg {
+  width: 60px;
+  height: 60px;
+  border-width: 4px;
+}
+
+/* Star Rating Styles */
+.star-rating {
+  display: inline-flex;
+  gap: 0.25rem;
+  width: 100%;
+}
+
+.star {
+  font-size: 2rem;
+  cursor: pointer;
+  color: #e2e8f0; /* Empty star color */
+  user-select: none; /* Prevents text selection */
+}
+
+.star::before {
+  content: "★"; /* Actual star character */
+}
+
+.star.filled {
+  color: #fbbf24; /* Filled star color - golden yellow */
+}
+
+.star:hover,
+.star.hover {
+  color: #f59e0b; /* Hover state color */
+}
+
+/* Star sizes */
+.star-rating.sm .star {
+  font-size: 1rem;
+}
+
+.star-rating.lg .star {
+  font-size: 2rem;
+}
