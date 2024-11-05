@@ -1,3 +1,4 @@
+from datetime import datetime
 from uuid import UUID
 import uuid
 from sqlmodel import SQLModel, Field
@@ -26,6 +27,7 @@ class Form(FormBase, table=True):
     __tablename__ = "forms"
     
     form_information: str = Field(nullable=False)
+    created_at: datetime = Field(default_factory=datetime.now)
     
 class FormValue(SQLModel, table=True):
     __tablename__ = "form_values"

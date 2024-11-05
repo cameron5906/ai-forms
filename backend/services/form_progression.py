@@ -18,6 +18,8 @@ async def execute_with_form_input(form_id: UUID, session_id: UUID, inputs: dict)
     await update_current_step(session_id, step)
     await save_messages(session_id, returned_messages)
     
+    print("Step", step)
+    
     if step.is_final_step:
         await handle_completed_form(form_id, session_id)
     
@@ -30,6 +32,8 @@ async def execute_with_text_input(form_id: UUID, session_id: UUID, transcript: s
         raise ValueError("No current step found")
     
     values = await TextToInputsTranslator().get_inputs_from_text(transcript, current_step)
+    
+    print("Values", values)
     
     return await execute_with_form_input(form_id, session_id, values)
 

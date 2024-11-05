@@ -24,5 +24,4 @@ class BaseElement(BaseModel):
     element_type: ElementType
     id: str
     label: str
-    voice_friendly: Optional[str] = None
     

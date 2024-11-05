@@ -45,3 +45,8 @@ async def append_form_instructions(form_id: UUID, instructions: str) -> None:
         form = await get_form_by_id(form_id)
         form.form_information += instructions
         await db.commit()
+
+async def get_most_recent_form() -> Form | None:
+    async with get_db() as db:
+        form = await db.execute(select(Form).order_by(Form.created_at.desc()))
+        return form.scalar_one_or_none()

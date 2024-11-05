@@ -13,7 +13,7 @@ class StepGenerator(BasePrompt):
     def setup(self) -> None:
         pass
     
-    @tool("Generate a step")
+    @tool("Generate a step", force_if=lambda self: self.step is None)
     async def provide_step(self, step: Step) -> str:
         self.step = step
         return "Step generated"
@@ -50,6 +50,8 @@ class StepGenerator(BasePrompt):
         from ai.openai_models import GPT4o
         model = GPT4o()
         
+        print(f"Executing step generation")
+        
         self.set_system_prompt(f"""
 You are a form generator that creates one step at a time based on the provided description. Your role is to:
 
@@ -68,16 +70,19 @@ Guidelines:
 - DO NOT reference the next step in any of your steps
 - The final step DOES NOT HAVE A SUBMIT BUTTON
 - You can use the 'execute_code' tool to perform calculations or other computations
+- ALL elements must be contained within a group
+- Groups MUST specify an 'order', which is its position in the form. Elements should be positioned in a logical order.
 
 Code Execution Guidelines:
 - You can execute basic Python code using the 'execute_code' tool.
 - Your code must use base Python, you cannot use any external libraries or packages.
-- Your code must return a result variable.
+- Your code must return a result variable at the top level of the code so it can be captured.
 
 Element Usage Guidelines:
 
 Text Elements:
 - Use for introductions, instructions, and informational content
+- You must specify a label, which acts as a header for the element
 - Never mark as required
 - Size options: "sm" (details), "md" (normal text), "lg" (headings)
 
@@ -93,11 +98,13 @@ Dropdown Elements:
 - Perfect for: 
   * Countries, states, cities
   * Categories or types
+  * Sex (Male, Female, Other)
   * Predefined selections (e.g., departments, roles)
 - Avoid for: yes/no questions or binary choices
 
 Boolean Elements:
 - Use for yes/no questions
+- Cannot be placed in a horizontal group
 - Perfect for:
   * Consent checkboxes
   * Toggle settings
@@ -114,10 +121,6 @@ Element Groups:
 - Horizontal groups: Maximum 2 elements (e.g., first name + last name)
 - Vertical groups: Related fields that should be visually connected
 
-{'IMPORTANT: This is a voice call, so you must fill in the `voice_friendly` field for each element, this is what will be read out loud to request the information. Text fields can be used to speak to them, which means you can create steps that are just text. Text-only steps are automatically submitted.' if session_type == SessionType.VOICE else ''}
-{'IMPORTANT: This is a text chat, so you must fill in the `voice_friendly` field for each element, this is what will be displayed to request the information. Text fields can be used to speak to them, which means you can create steps that are just text. Text-only steps are automatically submitted.' if session_type == SessionType.TEXT else ''}
-{'IMPORTANT: Do not fill in the `voice_friendly` field, this is only used for voice calls.' if session_type == SessionType.WEB else ''}
-
 Remember:
 - Group related fields together to improve user experience
 - Use appropriate validation through required fields
@@ -125,14 +128,16 @@ Remember:
 - Ensure all elements align with the form's purpose
 """.strip())
         
-        if session_type == SessionType.VOICE:
+        if session_type == SessionType.VOICE or session_type == SessionType.TEXT:
             self.add_user_message("""
-This form will be taken over a voice call, so you should create elements that can be easily transcribed from speech to text.
-""".strip())
-        
-        if session_type == SessionType.TEXT:
-            self.add_user_message("""
-This form will be taken over a text chat, so you should create elements that can be easily understood from text input.
+This form will be taken over a voice call, so you need to describe each field in the step in the step description so the user knows what to say.
+If the user does not specify an answer, you will re-prompt them, slightly tweaking the question to encourage a response.
+
+Given this is fundamentally different from the regular step submission process, you will keep each step to a maximum of one input or set of related inputs. Ensure the step description is appropriate with this in mind.
+
+You WILL NOT use text elements in voice mode, instead you will roll up all details into the step description.
+
+Additionally, you will not use words like 'type' or 'input', rather you will use 'say' or 'describe' since this is a voice call.
 """.strip())
         
         self.add_user_message(description)
@@ -141,7 +146,9 @@ This form will be taken over a text chat, so you should create elements that can
         
         if inputs:
             self.add_user_message(json.dumps(inputs))
-        
+        else:
+            self.add_user_message("No inputs provided")
+            
         returned_messages = await model.get_responses(self)
         
         return self.step, returned_messages

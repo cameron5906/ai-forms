@@ -6,9 +6,9 @@ from domain.dto.step import Step
 from common.database import get_db
 from domain.schema.chat import ChatSession, ChatMessage, SessionType
 
-async def create_chat_session(form_id: UUID, session_type: SessionType):
+async def create_chat_session(form_id: UUID, session_type: SessionType, phone_number: Optional[str] = None):
     async with get_db() as db:
-        chat_session = ChatSession(form_id=form_id, session_type=session_type)
+        chat_session = ChatSession(form_id=form_id, session_type=session_type, phone_number=phone_number)
         db.add(chat_session)
         await db.commit()
         return chat_session
@@ -31,10 +31,13 @@ async def get_messages(session_id: UUID) -> list[ChatMessage]:
 
 async def update_current_step(session_id: UUID, current_step: Step):
     async with get_db() as db:
-        await db.execute(
-            update(ChatSession).where(ChatSession.id == session_id).values(current_step_json=current_step.model_dump_json())
-        )
-        await db.commit()
+        try:
+            await db.execute(
+                update(ChatSession).where(ChatSession.id == session_id).values(current_step_json=current_step.model_dump_json())
+            )
+            await db.commit()
+        except Exception as e:
+            print(e)
 
 async def get_current_step(session_id: UUID) -> Optional[Step]:
     """
@@ -56,3 +59,10 @@ async def get_current_step(session_id: UUID) -> Optional[Step]:
             return None
         
         return Step.model_validate_json(session.current_step_json)
+
+async def get_session_from_phone_number(phone_number: str) -> Optional[ChatSession]:
+    async with get_db() as db:
+        chat_session = await db.execute(
+            select(ChatSession).where(ChatSession.phone_number == phone_number)
+        )
+        return chat_session.scalar_one_or_none()

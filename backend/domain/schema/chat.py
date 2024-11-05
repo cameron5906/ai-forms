@@ -19,6 +19,7 @@ class ChatSession(ChatSessionBase, table=True):
     
     id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
     session_type: SessionType = Field(nullable=False)
+    phone_number: Optional[str] = Field(nullable=True)
     current_step_json: Optional[str] = Field(nullable=True)
     messages: list["ChatMessage"] = Relationship(back_populates="chat_session")
 

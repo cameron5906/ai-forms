@@ -1,3 +1,4 @@
+from typing import Optional
 from uuid import UUID
 from fastapi import HTTPException
 from repositories.forms import get_form_by_id, get_form_schema
@@ -7,12 +8,12 @@ from domain.dto.step import Step
 from .chat import save_messages
 from domain.schema.chat import SessionType
 
-async def create_session(form_id: UUID, session_type: SessionType) -> tuple[UUID, Step]:
+async def create_session(form_id: UUID, session_type: SessionType, phone_number: Optional[str] = None) -> tuple[UUID, Step]:
     form = await get_form_by_id(form_id)
     if not form:
         raise HTTPException(status_code=404, detail="Form not found")
     
-    new_session = await create_chat_session(form_id, session_type)
+    new_session = await create_chat_session(form_id, session_type, phone_number)
     step_generator = StepGenerator(form)
     
     form_instructions = form.form_information

@@ -15,6 +15,8 @@ class TextToInputsTranslator(BasePrompt):
         from ai.openai_models import GPT4o
         model = GPT4o()
         
+        print(f"Executing text to inputs translation", transcript, step)
+        
         self.set_system_prompt("""
 You will match a provided transcript of a user speaking with the inputs of a form.
 Your job is to provide an object with keys being the ids of the elements in the form and values being the derived value from the transcript.
